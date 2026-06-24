@@ -17,16 +17,13 @@ import lombok.Setter;
 public class Provas {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O titulo da prova é obrigatório!")
     private String titulo;
-
-    @NotNull(message = "A nota é obrigatória!")
     private double nota;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @JoinColumn(name = "caixa_id")
+    private CaixaProvas caixaProvas;
 }

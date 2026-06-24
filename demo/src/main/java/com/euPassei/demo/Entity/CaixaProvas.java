@@ -1,0 +1,38 @@
+package com.euPassei.demo.Entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "caixaProvas")
+public class CaixaProvas {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String titulo;
+    private double mediaMin;
+    private int quantidade;
+    private boolean temRecuperacao;
+    private boolean temProvaFinal;
+    private Double mediaMinDireitoFinal;
+    private Double mediaMinFinal;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
+
+    @OneToMany(mappedBy = "caixaProvas", cascade = CascadeType.ALL)
+    private List<Provas> listaProvas;
+
+}
