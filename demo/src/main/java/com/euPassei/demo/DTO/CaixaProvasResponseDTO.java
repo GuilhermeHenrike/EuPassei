@@ -22,7 +22,7 @@ public class CaixaProvasResponseDTO {
     private boolean temProvaFinal;
     private Double mediaMinDireitoFinal;
     private Double mediaMinFinal;
-
+    private Double mediaAtual;
     private String situacao;
     private Double pontosNecessarios;
 
@@ -37,6 +37,10 @@ public class CaixaProvasResponseDTO {
         this.temProvaFinal = caixa.isTemProvaFinal();
         this.mediaMinDireitoFinal = caixa.getMediaMinDireitoFinal();
         this.mediaMinFinal = caixa.getMediaMinFinal();
+        this.situacao = caixa.getSituacao();
+        this.pontosNecessarios = caixa.getPontosNecessarios();
+        this.mediaAtual = caixa.getMediaAtual();
+
 
         if (caixa.getListaProvas() != null) {
             this.listaProvas = new ArrayList<>();

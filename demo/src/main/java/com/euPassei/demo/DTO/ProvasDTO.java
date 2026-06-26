@@ -16,10 +16,13 @@ public class ProvasDTO {
     @NotNull(message = "A nota é obrigatória!")
     private double nota;
 
+    private String tipo = "NORMAL";
+
     public ProvasDTO(Provas provas) {
         this.id = provas.getId();
         this.titulo = provas.getTitulo();
         this.nota = provas.getNota();
+        this.tipo = provas.getTipo();
     }
 
 }

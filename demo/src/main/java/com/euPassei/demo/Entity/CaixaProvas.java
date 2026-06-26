@@ -27,6 +27,9 @@ public class CaixaProvas {
     private boolean temProvaFinal;
     private Double mediaMinDireitoFinal;
     private Double mediaMinFinal;
+    private Double mediaAtual;
+    private String situacao;
+    private Double pontosNecessarios;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -22,6 +22,7 @@ public class Provas {
 
     private String titulo;
     private double nota;
+    private String tipo = "NORMAL";
 
     @ManyToOne
     @JoinColumn(name = "caixa_id")
