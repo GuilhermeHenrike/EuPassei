@@ -1,4 +1,4 @@
-package com.euPassei.demo.DTO;
+package com.euPassei.demo.DTO.CaixaProvas;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

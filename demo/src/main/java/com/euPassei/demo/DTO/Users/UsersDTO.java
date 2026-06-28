@@ -1,9 +1,6 @@
-package com.euPassei.demo.DTO;
+package com.euPassei.demo.DTO.Users;
 
 import com.euPassei.demo.Entity.Users;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

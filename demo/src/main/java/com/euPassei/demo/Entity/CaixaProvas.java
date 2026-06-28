@@ -21,10 +21,10 @@ public class CaixaProvas {
     private Long id;
 
     private String titulo;
-    private double mediaMin;
-    private int quantidade;
-    private boolean temRecuperacao;
-    private boolean temProvaFinal;
+    private Double mediaMin;
+    private Integer quantidade;
+    private Boolean temRecuperacao;
+    private Boolean temProvaFinal;
     private Double mediaMinDireitoFinal;
     private Double mediaMinFinal;
     private Double mediaAtual;

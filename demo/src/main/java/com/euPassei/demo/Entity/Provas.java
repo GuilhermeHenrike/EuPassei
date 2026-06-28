@@ -21,7 +21,7 @@ public class Provas {
     private Long id;
 
     private String titulo;
-    private double nota;
+    private Double nota;
     private String tipo = "NORMAL";
 
     @ManyToOne
