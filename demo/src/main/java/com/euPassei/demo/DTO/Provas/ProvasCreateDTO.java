@@ -1,11 +1,13 @@
-package com.euPassei.demo.DTO;
+package com.euPassei.demo.DTO.Provas;
 
 import com.euPassei.demo.Entity.Provas;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ProvasDTO {
 
     private Long id;
@@ -14,7 +16,7 @@ public class ProvasDTO {
     private String titulo;
 
     @NotNull(message = "A nota é obrigatória!")
-    private double nota;
+    private Double nota;
 
     private String tipo = "NORMAL";
 
