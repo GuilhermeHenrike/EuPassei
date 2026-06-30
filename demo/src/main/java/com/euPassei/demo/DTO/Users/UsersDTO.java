@@ -4,8 +4,10 @@ import com.euPassei.demo.Entity.Users;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class UsersDTO {
 
     private Long id;
@@ -22,6 +24,14 @@ public class UsersDTO {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
+    }
+
+    public Users toEntity() {
+        Users user = new Users();
+        user.setId(this.id);
+        user.setUsername(username);
+        user.setPassword(password);
+        return user;
     }
 
 }

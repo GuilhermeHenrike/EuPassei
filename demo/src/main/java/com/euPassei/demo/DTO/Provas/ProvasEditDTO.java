@@ -1,6 +1,8 @@
 package com.euPassei.demo.DTO.Provas;
 
 import com.euPassei.demo.Entity.Provas;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -13,14 +15,15 @@ public class ProvasEditDTO {
     @NotNull(message = "O Id é obrigatório para edição")
     private Long id;
     private String titulo;
+
+    @Min(value = 0, message = "A nota minima é 0.0")
+    @Max(value = 10, message = "A nota maxima é 10.0")
     private Double nota;
-    private String tipo = "NORMAL";
 
     public ProvasEditDTO(Provas provas) {
         this.id = provas.getId();
         this.titulo = provas.getTitulo();
         this.nota = provas.getNota();
-        this.tipo = provas.getTipo();
     }
 
     public Provas toEntity() {
@@ -28,7 +31,6 @@ public class ProvasEditDTO {
         provas.setId(this.id);
         provas.setTitulo(this.titulo);
         provas.setNota(this.nota);
-        provas.setTipo(this.tipo);
         return provas;
     }
 

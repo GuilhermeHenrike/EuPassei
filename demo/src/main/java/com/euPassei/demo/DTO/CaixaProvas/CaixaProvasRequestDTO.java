@@ -1,7 +1,7 @@
 package com.euPassei.demo.DTO.CaixaProvas;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.euPassei.demo.Entity.CaixaProvas;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,5 +25,16 @@ public class CaixaProvasRequestDTO {
     private Double mediaMinDireitoFinal;
     private Double mediaMinFinal;
 
+    public CaixaProvas toEntity() {
+        CaixaProvas caixaProvas = new CaixaProvas();
+        caixaProvas.setTitulo(this.titulo);
+        caixaProvas.setMediaMin(this.mediaMin);
+        caixaProvas.setQuantidade(this.quantidade);
+        caixaProvas.setTemRecuperacao(this.temRecuperacao);
+        caixaProvas.setTemProvaFinal(this.temProvaFinal);
+        caixaProvas.setMediaMinDireitoFinal(this.mediaMinDireitoFinal);
+        caixaProvas.setMediaMinFinal(this.mediaMinFinal);
+        return caixaProvas;
+    }
 
 }

@@ -3,6 +3,7 @@ package com.euPassei.demo.Service;
 import com.euPassei.demo.DTO.Provas.ProvasEditDTO;
 import com.euPassei.demo.Entity.CaixaProvas;
 import com.euPassei.demo.Entity.Provas;
+import com.euPassei.demo.Entity.Users;
 import com.euPassei.demo.Repository.CaixaProvasRepository;
 import com.euPassei.demo.Repository.ProvasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,17 @@ public class ProvasService {
     private CaixaProvasService caixaProvasService;
 
     @Transactional
-    public Provas salvar(Provas prova, Long caixaId) {
-        CaixaProvas caixaDona = caixaProvasRepository.findById(caixaId).orElse(null);
+    public Provas salvar(Provas prova, Long caixaId, Users userLogado) {
 
-        if (caixaDona == null) {
-            throw new IllegalArgumentException("Matéria não encontrada");
+        if (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado");
+        }
+
+        CaixaProvas caixaDona = caixaProvasRepository.findById(caixaId)
+                .orElseThrow(() -> new IllegalArgumentException("Caixa não encontrada ou não existe"));
+
+        if (!caixaDona.getUser().getId().equals(userLogado.getId())) {
+            throw new IllegalArgumentException("Você não tem permissão para isso!");
         }
 
         // seta a caixa da prova como a caixa dona que veio do id
@@ -45,7 +52,11 @@ public class ProvasService {
     }
 
     @Transactional
-    public void mudarProva(ProvasEditDTO prova, Long caixaId) {
+    public void mudarProva(ProvasEditDTO prova, Long caixaId, Users userLogado) {
+
+        if  (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado");
+        }
 
         // caso mande a prova nula
         if (prova == null || prova.getId() == null) {
@@ -68,6 +79,10 @@ public class ProvasService {
             throw new IllegalArgumentException("Caixa de provas inexistente");
         }
 
+        if (!caixa.getUser().getId().equals(userLogado.getId())) {
+            throw new IllegalArgumentException("Você não tem permissão para isso!");
+        }
+
         if (prova.getTitulo() != null) {
             provaAntiga.setTitulo(prova.getTitulo());
         }
@@ -82,7 +97,11 @@ public class ProvasService {
     }
 
     @Transactional
-    public void deletar(Long provaId, Long caixaId) {
+    public void deletar(Long provaId, Long caixaId, Users userLogado) {
+
+        if  (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado");
+        }
 
         if (provaId == null) {
             throw new IllegalArgumentException("Id da prova inexistente");
@@ -103,11 +122,14 @@ public class ProvasService {
             throw new IllegalArgumentException("Dados incorretos");
         }
 
+        if (!caixa.getUser().getId().equals(userLogado.getId())) {
+            throw new IllegalArgumentException("Você não tem permissão para isso!");
+        }
+
         caixa.getListaProvas().remove(provaDeletar);
         caixaProvasService.calcularMedia(caixa);
         caixaProvasRepository.save(caixa);
         provasRepository.delete(provaDeletar);
     }
-
 
 }

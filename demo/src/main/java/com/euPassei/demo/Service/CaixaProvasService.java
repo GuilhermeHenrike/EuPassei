@@ -5,6 +5,7 @@ import com.euPassei.demo.Entity.CaixaProvas;
 import com.euPassei.demo.Entity.Provas;
 import com.euPassei.demo.Entity.Users;
 import com.euPassei.demo.Repository.CaixaProvasRepository;
+import com.euPassei.demo.Repository.UsersRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class CaixaProvasService {
 
     @Autowired
     private CaixaProvasRepository caixaProvasRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     public void calcularMedia(CaixaProvas caixa) {
 
@@ -93,19 +97,15 @@ public class CaixaProvasService {
     }
 
     @Transactional
-    public CaixaProvas criarCaixaProvas(CaixaProvas caixaProvas, Long userId) {
+    public CaixaProvas criarCaixaProvas(CaixaProvas caixaProvas, Users userLogado) {
 
-        if (userId == null) {
+        if (userLogado == null) {
             throw new RuntimeException("Você precisa estar logado!");
         }
 
-        // cria um usuario vazio
-        Users userAtual = new Users();
+        Users userAtual = usersRepository.findById(userLogado.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado!"));
 
-        // coloca o id que veio nele
-        userAtual.setId(userId);
-
-        // coloca o usuario como dono da caixa
         caixaProvas.setUser(userAtual);
         calcularMedia(caixaProvas);
         return caixaProvasRepository.save(caixaProvas);
@@ -182,5 +182,19 @@ public class CaixaProvasService {
 
         calcularMedia(caixaAtual);
         return caixaProvasRepository.save(caixaAtual);
+    }
+
+    @Transactional
+    public void excluirCaixaProvas(Long caixaId, Users userLogado) {
+
+        if (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado");
+        }
+
+        // checa se acha uma caixa pelo id da caixa e do usuario, se não joga erro
+        CaixaProvas caixaAtual = caixaProvasRepository.findByIdAndUserId(caixaId, userLogado.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Caixa não encontrada ou não existe ou você não tem permissão!"));
+
+        caixaProvasRepository.delete(caixaAtual);
     }
 }
