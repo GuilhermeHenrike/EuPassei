@@ -31,6 +31,14 @@ public class CaixaProvasService {
             return;
         }
 
+        long qntProvas = caixa.getListaProvas()
+                .stream().filter(provas -> provas.getTipo().equals("NORMAL"))
+                .count();
+
+        if (qntProvas > caixa.getQuantidade()) {
+            throw new IllegalArgumentException("Limite de provas excedido!");
+        }
+
         double notas = 0;
         Double notaFinal = null;
 
@@ -48,6 +56,7 @@ public class CaixaProvasService {
         if (qntProvasNormais <= 0) {
             qntProvasNormais = 1;
         }
+
         double media = notas / qntProvasNormais;
         caixa.setMediaAtual(media);
 
@@ -58,12 +67,21 @@ public class CaixaProvasService {
                 caixa.setMediaAtual(mediaFinal);
 
                 // FEZ A PROVA FINAL
-                if (mediaFinal >= caixa.getMediaMinFinal()) {
+                // caso tenha passado mediaminfinal
+                if (caixa.getMediaMinFinal() != null && mediaFinal >= caixa.getMediaMinFinal()) {
                     caixa.setSituacao("Aprovado");
                     caixa.setPontosNecessarios(0.0);
+                } else if (caixa.getMediaMinFinal() == null) { // caso n tenha passado mediaminfinal
+                    if (mediaFinal >= caixa.getMediaMin())  {
+                        caixa.setSituacao("Aprovado");
+                        caixa.setPontosNecessarios(0.0);
+                    } else {
+                        caixa.setSituacao("Reprovado");
+                        caixa.setPontosNecessarios(0.0);
+                    }
                 } else {
-                    caixa.setSituacao("Reprovado");
-                    caixa.setPontosNecessarios(0.0);
+                        caixa.setSituacao("Reprovado");
+                        caixa.setPontosNecessarios(0.0);
                 }
 
                 // NAO FEZ AINDA
@@ -71,12 +89,16 @@ public class CaixaProvasService {
                 if (caixa.getMediaAtual() >= caixa.getMediaMin()) {
                     caixa.setSituacao("Aprovado");
                     caixa.setPontosNecessarios(0.0);
-                } else if (caixa.getMediaAtual() >= caixa.getMediaMinDireitoFinal()) {
+                } else if (caixa.getMediaMinDireitoFinal() != null && caixa.getMediaAtual() >= caixa.getMediaMinDireitoFinal()) {
                     caixa.setSituacao("Prova Final");
 
                     // nota necessaria pra quem ficou na final
-                    double notaNecessaria = (2 * caixa.getMediaMinFinal()) - caixa.getMediaAtual();
-                    caixa.setPontosNecessarios(notaNecessaria);
+                    if (caixa.getMediaMinFinal() != null) {
+                        double notaNecessaria = (2 * caixa.getMediaMinFinal()) - caixa.getMediaAtual();
+                        caixa.setPontosNecessarios(notaNecessaria);
+                    } else  {
+                        caixa.setPontosNecessarios(0.0);
+                    }
 
                 } else {
                     caixa.setSituacao("Reprovado");
@@ -97,7 +119,7 @@ public class CaixaProvasService {
     }
 
     @Transactional
-    public CaixaProvas criarCaixaProvas(CaixaProvas caixaProvas, Users userLogado) {
+    public void criarCaixaProvas(CaixaProvas caixaProvas, Users userLogado) {
 
         if (userLogado == null) {
             throw new RuntimeException("Você precisa estar logado!");
@@ -108,12 +130,17 @@ public class CaixaProvasService {
 
         caixaProvas.setUser(userAtual);
         calcularMedia(caixaProvas);
-        return caixaProvasRepository.save(caixaProvas);
+        caixaProvasRepository.save(caixaProvas);
     }
 
     @Transactional(readOnly = true) // pro metodo conseguir retornar as entidades da lista da caixa
-    public List<Provas> mostrarProvasDaCaixa(Long caixaId, Long userId) {
-        Optional<CaixaProvas> caixaProvasOPT =  caixaProvasRepository.findByIdAndUserId(caixaId, userId);
+    public List<Provas> mostrarProvasDaCaixa(Long caixaId, Users userLogado) {
+
+        if (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado!");
+        }
+
+        Optional<CaixaProvas> caixaProvasOPT =  caixaProvasRepository.findByIdAndUserId(caixaId, userLogado.getId());
 
         if (caixaProvasOPT.isPresent()) {
             CaixaProvas caixaProvasAchada = caixaProvasOPT.get();
@@ -125,10 +152,15 @@ public class CaixaProvasService {
     }
 
     @Transactional
-    public CaixaProvas editarCaixa(Long userId, Long caixaId, CaixaProvasEditDTO caixaProvas) {
+    public CaixaProvas editarCaixa(Long caixaId, CaixaProvasEditDTO caixaProvas, Users userLogado) {
+
+        if (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado!");
+        }
+
         // ai ele ta pegando o id da caixa e do user e ta procurando qual caixa do user tem id = caixaId
         // ai se ele acha o metodo ja sabe que essa é a caixa que o usuario ta mudando
-        Optional<CaixaProvas> caixaOPT = caixaProvasRepository.findByIdAndUserId(caixaId, userId);
+        Optional<CaixaProvas> caixaOPT = caixaProvasRepository.findByIdAndUserId(caixaId, userLogado.getId());
 
         if (caixaOPT.isEmpty()) {
             throw new IllegalArgumentException("Caixa de provas não encontradas ou sem permissão!");

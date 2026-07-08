@@ -1,6 +1,8 @@
 package com.euPassei.demo.Controller.CaixaProvasController;
+import com.euPassei.demo.DTO.CaixaProvas.CaixaProvasEditDTO;
 import com.euPassei.demo.DTO.CaixaProvas.CaixaProvasRequestDTO;
 import com.euPassei.demo.Entity.CaixaProvas;
+import com.euPassei.demo.Entity.Provas;
 import com.euPassei.demo.Entity.Users;
 import com.euPassei.demo.Service.CaixaProvasService;
 import jakarta.servlet.http.HttpSession;
@@ -11,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/api")
 public class CaixaProvasController {
 
@@ -52,6 +57,45 @@ public class CaixaProvasController {
         try {
             caixaProvasService.excluirCaixaProvas(caixaId, userLogado);
             return ResponseEntity.ok().body("Caixa de provas deletada com sucesso");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/caixaProvas/{caixaId}")
+    public ResponseEntity<?> editarCaixaProvas(@PathVariable Long caixaId, HttpSession session,
+                                          @Valid @RequestBody CaixaProvasEditDTO dto,
+                                          BindingResult result) {
+
+        if (result.hasErrors()) {
+            String mensagemErro = result.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagemErro);
+        }
+
+        Users userLogado = (Users) session.getAttribute("userLogado");
+        if (userLogado == null) {
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você precisa estar logado!");
+        }
+
+        try {
+            caixaProvasService.editarCaixa(caixaId, dto, userLogado);
+            return ResponseEntity.status(HttpStatus.OK).body("Caixa de provas editada com sucesso");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/caixaProvas/{caixaId}")
+    public ResponseEntity<?> mostrarCaixaProvas(@PathVariable Long caixaId, HttpSession session) {
+
+        Users userLogado = (Users) session.getAttribute("userLogado");
+        if (userLogado == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você precisa estar logado!");
+        }
+
+        try {
+            List<Provas> lista = caixaProvasService.mostrarProvasDaCaixa(caixaId, userLogado);
+            return ResponseEntity.status(HttpStatus.OK).body(lista);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
