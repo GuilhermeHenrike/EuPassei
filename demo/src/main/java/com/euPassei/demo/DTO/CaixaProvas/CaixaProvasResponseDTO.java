@@ -25,6 +25,8 @@ public class CaixaProvasResponseDTO {
     private String situacao;
     private Double pontosNecessarios;
 
+    private boolean podeAdicionarMaisProvasNormais;
+
     private List<ProvasCreateDTO> listaProvas;
 
     public CaixaProvasResponseDTO(CaixaProvas caixa) {
@@ -39,14 +41,17 @@ public class CaixaProvasResponseDTO {
         this.situacao = caixa.getSituacao();
         this.pontosNecessarios = caixa.getPontosNecessarios();
         this.mediaAtual = caixa.getMediaAtual();
+        this.podeAdicionarMaisProvasNormais = caixa.isPodeAdicionarMaisProvasNormais();
 
-
+        // se não tiver vazio é porque tem uma lista, dai ele cria uma arraylist com a lista
         if (caixa.getListaProvas() != null) {
             this.listaProvas = new ArrayList<>();
 
-            // pegando todas as provas de caixa.getListaProvas lá do Entity
+            // pegando todas as provas de caixa.getListaProvas
             for (Provas provas : caixa.getListaProvas()) {
-                // adiciona uma nova prova em DTO (a prova da vez do for) dentro de listaProvas daqui
+                // pega as provas e manda para o ProvasCreateDTO que tira dados inúteis para mostrar
+                // tipo a caixa em que essa prova está, e adiciona na lista da caixa
+                // isso acontece por que o response retorna a entidade Provas e não já formatado
                 this.listaProvas.add(new ProvasCreateDTO(provas));
             }
         }

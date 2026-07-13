@@ -1,5 +1,6 @@
 package com.euPassei.demo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,9 +34,24 @@ public class CaixaProvas {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private Users user;
 
     @OneToMany(mappedBy = "caixaProvas", cascade = CascadeType.ALL)
     private List<Provas> listaProvas;
 
+    // para fazer os botões sumirem quando atinge o limite
+    @JsonIgnore
+    public boolean isPodeAdicionarMaisProvasNormais() {
+        if (this.listaProvas == null) {
+            return true; // se tiver nula (vazia) é pq pode adicionar
+        }
+
+        // conta quantas provas de tipo "NORMAL" tem na caixa
+        long totalProvasNormais = this.listaProvas.stream()
+                .filter(provas -> "NORMAL".equals(provas.getTipo())).count();
+
+        // enquanto for menor que quantidade ele continua
+        return totalProvasNormais < this.quantidade;
+    }
 }

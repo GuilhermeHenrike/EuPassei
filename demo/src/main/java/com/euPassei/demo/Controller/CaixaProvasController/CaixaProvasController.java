@@ -101,4 +101,22 @@ public class CaixaProvasController {
         }
     }
 
+    @GetMapping("/caixaProvas")
+    public ResponseEntity<?> listarTodasCaixas(HttpSession session) {
+
+        Users userLogado = (Users) session.getAttribute("userLogado");
+        if (userLogado == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você precisa estar logado!");
+        }
+
+        try {
+            // cria uma lista de provas e manda o id do usuario pra listarTodasCaixasDoUsuario
+            List<CaixaProvas> lista = caixaProvasService.listarTodasCaixasDoUsuario(userLogado);
+            // retorna status de ok e a lista com todas as caixas
+            return ResponseEntity.status(HttpStatus.OK).body(lista);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }

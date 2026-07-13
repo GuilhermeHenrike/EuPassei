@@ -31,6 +31,7 @@ public class CaixaProvasService {
             return;
         }
 
+        // para não deixar o limite exceder
         long qntProvas = caixa.getListaProvas()
                 .stream().filter(provas -> provas.getTipo().equals("NORMAL"))
                 .count();
@@ -39,6 +40,7 @@ public class CaixaProvasService {
             throw new IllegalArgumentException("Limite de provas excedido!");
         }
 
+        // nota de tipos diferentes de prova
         double notas = 0;
         Double notaFinal = null;
 
@@ -133,6 +135,7 @@ public class CaixaProvasService {
         caixaProvasRepository.save(caixaProvas);
     }
 
+    // REPENSAR SE ISSO É UTIL AAAAAAAAAAAAAAAASNDISAHUFGPAFJASOPFJKSAÌFIAFSAF^`SA
     @Transactional(readOnly = true) // pro metodo conseguir retornar as entidades da lista da caixa
     public List<Provas> mostrarProvasDaCaixa(Long caixaId, Users userLogado) {
 
@@ -228,5 +231,17 @@ public class CaixaProvasService {
                 .orElseThrow(() -> new IllegalArgumentException("Caixa não encontrada ou não existe ou você não tem permissão!"));
 
         caixaProvasRepository.delete(caixaAtual);
+    }
+
+    // lista todas as caixas do usuario pelo id dele
+    @Transactional(readOnly = true)
+    public List<CaixaProvas> listarTodasCaixasDoUsuario(Users userLogado) {
+
+        if (userLogado == null) {
+            throw new IllegalArgumentException("Você precisa estar logado!");
+        }
+
+        // Busca todas as caixas onde o ID do usuário seja igual ao logado
+        return caixaProvasRepository.findByUserId(userLogado.getId());
     }
 }
