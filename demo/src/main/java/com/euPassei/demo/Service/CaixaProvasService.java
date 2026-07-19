@@ -62,58 +62,39 @@ public class CaixaProvasService {
         double media = notas / qntProvasNormais;
         caixa.setMediaAtual(media);
 
-        // só vai se não for nulo e for verdadeiro
-        if (caixa.getTemProvaFinal() != null && caixa.getTemProvaFinal()) {
-            if (notaFinal != null) {
-                double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2;
-                caixa.setMediaAtual(mediaFinal);
+        if (caixa.getTemProvaFinal() != null && caixa.getTemProvaFinal() && notaFinal != null) {
+            double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2;
+            caixa.setMediaAtual(mediaFinal);
 
-                // FEZ A PROVA FINAL
-                // caso tenha passado mediaminfinal
-                if (caixa.getMediaMinFinal() != null && mediaFinal >= caixa.getMediaMinFinal()) {
-                    caixa.setSituacao("Aprovado");
-                    caixa.setPontosNecessarios(0.0);
-                } else if (caixa.getMediaMinFinal() == null) { // caso n tenha passado mediaminfinal
-                    if (mediaFinal >= caixa.getMediaMin())  {
-                        caixa.setSituacao("Aprovado");
-                        caixa.setPontosNecessarios(0.0);
-                    } else {
-                        caixa.setSituacao("Reprovado");
-                        caixa.setPontosNecessarios(0.0);
-                    }
-                } else {
-                        caixa.setSituacao("Reprovado");
-                        caixa.setPontosNecessarios(0.0);
-                }
+            double notaCorteFinal = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : caixa.getMediaMin();
 
-                // NAO FEZ AINDA
+            if (mediaFinal >= notaCorteFinal) {
+                caixa.setSituacao("Aprovado");
             } else {
-                if (caixa.getMediaAtual() >= caixa.getMediaMin()) {
-                    caixa.setSituacao("Aprovado");
-                    caixa.setPontosNecessarios(0.0);
-                } else if (caixa.getMediaMinDireitoFinal() != null && caixa.getMediaAtual() >= caixa.getMediaMinDireitoFinal()) {
-                    caixa.setSituacao("Prova Final");
-
-                    // nota necessaria pra quem ficou na final
-                    if (caixa.getMediaMinFinal() != null) {
-                        double notaNecessaria = (2 * caixa.getMediaMinFinal()) - caixa.getMediaAtual();
-                        caixa.setPontosNecessarios(notaNecessaria);
-                    } else  {
-                        caixa.setPontosNecessarios(0.0);
-                    }
-
-                } else {
-                    caixa.setSituacao("Reprovado");
-                    caixa.setPontosNecessarios(0.0);
-                }
+                caixa.setSituacao("Reprovado");
             }
+            caixa.setPontosNecessarios(0.0);
+        }
 
-            // NAO TEM FINAL
-        } else {
+        // CAMINHO 1 e 2: NORMAL ou PROVA FINAL (AINDA NÃO FEITA)
+        else {
+            // CAMINHO 1: NORMAL (Aprovado direto)
             if (caixa.getMediaAtual() >= caixa.getMediaMin()) {
                 caixa.setSituacao("Aprovado");
                 caixa.setPontosNecessarios(0.0);
-            } else {
+            }
+
+            // CAMINHO 2: PROVA FINAL (Tem direito)
+            else if (caixa.getTemProvaFinal() != null && caixa.getTemProvaFinal() &&
+                    (caixa.getMediaMinDireitoFinal() == null || caixa.getMediaAtual() >= caixa.getMediaMinDireitoFinal())) {
+
+                caixa.setSituacao("Prova Final");
+                double notaNecessaria = (caixa.getMediaMinFinal() != null) ? (2 * caixa.getMediaMinFinal()) - caixa.getMediaAtual() : 0.0;
+                caixa.setPontosNecessarios(Math.max(0, notaNecessaria));
+            }
+
+            // REPROVADO
+            else {
                 caixa.setSituacao("Reprovado");
                 caixa.setPontosNecessarios(0.0);
             }
@@ -133,25 +114,6 @@ public class CaixaProvasService {
         caixaProvas.setUser(userAtual);
         calcularMedia(caixaProvas);
         caixaProvasRepository.save(caixaProvas);
-    }
-
-    // REPENSAR SE ISSO É UTIL AAAAAAAAAAAAAAAASNDISAHUFGPAFJASOPFJKSAÌFIAFSAF^`SA
-    @Transactional(readOnly = true) // pro metodo conseguir retornar as entidades da lista da caixa
-    public List<Provas> mostrarProvasDaCaixa(Long caixaId, Users userLogado) {
-
-        if (userLogado == null) {
-            throw new IllegalArgumentException("Você precisa estar logado!");
-        }
-
-        Optional<CaixaProvas> caixaProvasOPT =  caixaProvasRepository.findByIdAndUserId(caixaId, userLogado.getId());
-
-        if (caixaProvasOPT.isPresent()) {
-            CaixaProvas caixaProvasAchada = caixaProvasOPT.get();
-
-            return caixaProvasAchada.getListaProvas();
-        }
-
-        throw new IllegalArgumentException("Caixa de provas não encontrada ou você não tem permissão!");
     }
 
     @Transactional

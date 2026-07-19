@@ -85,22 +85,6 @@ public class CaixaProvasController {
         }
     }
 
-    @GetMapping("/caixaProvas/{caixaId}")
-    public ResponseEntity<?> mostrarCaixaProvas(@PathVariable Long caixaId, HttpSession session) {
-
-        Users userLogado = (Users) session.getAttribute("userLogado");
-        if (userLogado == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você precisa estar logado!");
-        }
-
-        try {
-            List<Provas> lista = caixaProvasService.mostrarProvasDaCaixa(caixaId, userLogado);
-            return ResponseEntity.status(HttpStatus.OK).body(lista);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
     @GetMapping("/caixaProvas")
     public ResponseEntity<?> listarTodasCaixas(HttpSession session) {
 

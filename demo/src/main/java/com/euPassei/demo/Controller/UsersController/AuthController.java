@@ -59,7 +59,13 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.status(HttpStatus.OK).body("Logout com sucesso");
+
+        try {
+            if (session != null) {
+                session.invalidate();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("Logout com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao realizar logout: " + e.getMessage());        }
     }
 }
