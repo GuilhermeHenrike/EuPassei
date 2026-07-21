@@ -2,7 +2,6 @@ package com.euPassei.demo.Controller.CaixaProvasController;
 import com.euPassei.demo.DTO.CaixaProvas.CaixaProvasEditDTO;
 import com.euPassei.demo.DTO.CaixaProvas.CaixaProvasRequestDTO;
 import com.euPassei.demo.Entity.CaixaProvas;
-import com.euPassei.demo.Entity.Provas;
 import com.euPassei.demo.Entity.Users;
 import com.euPassei.demo.Service.CaixaProvasService;
 import jakarta.servlet.http.HttpSession;

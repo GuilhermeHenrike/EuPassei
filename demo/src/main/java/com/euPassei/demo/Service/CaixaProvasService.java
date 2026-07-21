@@ -48,7 +48,6 @@ public class CaixaProvasService {
             if (provas.getTipo().equals("NORMAL")) {
                 notas += provas.getNota();
             }
-
             else if (provas.getTipo().equals("FINAL")) {
                 notaFinal = provas.getNota();
             }
@@ -59,11 +58,21 @@ public class CaixaProvasService {
             qntProvasNormais = 1;
         }
 
+        // Calcula a média normal baseada na quantidade de provas
         double media = notas / qntProvasNormais;
         caixa.setMediaAtual(media);
 
-        if (caixa.getTemProvaFinal() != null && caixa.getTemProvaFinal() && notaFinal != null) {
-            double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2;
+        boolean temProvaFinalAtiva = Boolean.TRUE.equals(caixa.getTemProvaFinal());
+
+        // 1. Aprovado Direto pela média normal
+        if (media >= caixa.getMediaMin()) {
+            caixa.setSituacao("Aprovado");
+            caixa.setPontosNecessarios(0.0);
+        }
+        // 2. JÁ FEZ A PROVA FINAL (notaFinal != null)
+        else if (temProvaFinalAtiva && notaFinal != null) {
+            // Média entre a média atual do semestre e a nota da final (dividido por 2)
+            double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2.0;
             caixa.setMediaAtual(mediaFinal);
 
             double notaCorteFinal = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : caixa.getMediaMin();
@@ -75,29 +84,19 @@ public class CaixaProvasService {
             }
             caixa.setPontosNecessarios(0.0);
         }
+        // 3. AINDA NÃO FEZ A PROVA FINAL, MAS TEM DIREITO A ELA
+        else if (temProvaFinalAtiva &&
+                (caixa.getMediaMinDireitoFinal() == null || media >= caixa.getMediaMinDireitoFinal())) {
 
-        // CAMINHO 1 e 2: NORMAL ou PROVA FINAL (AINDA NÃO FEITA)
+            caixa.setSituacao("Prova Final");
+
+            double notaNecessaria = (caixa.getMediaMinFinal() != null) ? (2 * caixa.getMediaMinFinal()) - media : 0.0;
+            caixa.setPontosNecessarios(Math.max(0, notaNecessaria));
+        }
+        // 4. REPROVADO
         else {
-            // CAMINHO 1: NORMAL (Aprovado direto)
-            if (caixa.getMediaAtual() >= caixa.getMediaMin()) {
-                caixa.setSituacao("Aprovado");
-                caixa.setPontosNecessarios(0.0);
-            }
-
-            // CAMINHO 2: PROVA FINAL (Tem direito)
-            else if (caixa.getTemProvaFinal() != null && caixa.getTemProvaFinal() &&
-                    (caixa.getMediaMinDireitoFinal() == null || caixa.getMediaAtual() >= caixa.getMediaMinDireitoFinal())) {
-
-                caixa.setSituacao("Prova Final");
-                double notaNecessaria = (caixa.getMediaMinFinal() != null) ? (2 * caixa.getMediaMinFinal()) - caixa.getMediaAtual() : 0.0;
-                caixa.setPontosNecessarios(Math.max(0, notaNecessaria));
-            }
-
-            // REPROVADO
-            else {
-                caixa.setSituacao("Reprovado");
-                caixa.setPontosNecessarios(0.0);
-            }
+            caixa.setSituacao("Reprovado");
+            caixa.setPontosNecessarios(0.0);
         }
     }
 
