@@ -36,4 +36,5 @@ Clone o repositório do back-end, acesse a pasta e inicie a aplicação:
 git clone <url-do-repo-do-back>
 
 # Execute a aplicação utilizando o Maven
-* **Pela IDE:** Abra o projeto na sua IDE (IntelliJ, Eclipse, etc.), navegue até a classe principal `DemoApplication.java` e clique no botão de **Run** (ícone de play verde).
+* **Pela IDE:** Abra o projeto na sua IDE (IntelliJ, Eclipse, etc.),
+navegue até a classe principal `DemoApplication.java` e clique no botão de **Run** (ícone de play verde).
