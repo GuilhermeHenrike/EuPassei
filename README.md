@@ -12,8 +12,8 @@ O sistema resolve o problema do acompanhamento escolar/universitário disperso, 
 
 ## 🗂️ Estrutura do Repositório
 O projeto está dividido em duas partes:
-* [Back-end (API)]([https://github.com/seu-usuario/link-para-o-repo-do-back](https://github.com/GuilhermeHenrike/euPassei))
-* [Front-end (Interface)]([https://github.com/seu-usuario/link-para-o-repo-do-front](https://github.com/GuilhermeHenrike/euPassei---react))
+* [Back-end (API)]([https://github.com/GuilhermeHenrike/euPassei])
+* [Front-end (Interface)]([https://github.com/GuilhermeHenrike/euPassei---react])
 
 ---
 
