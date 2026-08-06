@@ -69,18 +69,22 @@ public class CaixaProvasService {
             caixa.setSituacao("Aprovado");
             caixa.setPontosNecessarios(0.0);
         }
-        // 2. JÁ FEZ A PROVA FINAL (notaFinal != null)
+        // 2. JÁ FEZ A PROVA FINAL
         else if (temProvaFinalAtiva && notaFinal != null) {
-            // Média entre a média atual do semestre e a nota da final (dividido por 2)
-            double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2.0;
-            caixa.setMediaAtual(mediaFinal);
 
-            double notaCorteFinal = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : caixa.getMediaMin();
-
-            if (mediaFinal >= notaCorteFinal) {
-                caixa.setSituacao("Aprovado");
-            } else {
+            if (caixa.getMediaMinFinal() != null && notaFinal < caixa.getMediaMinFinal()) {
                 caixa.setSituacao("Reprovado");
+            } else {
+                double mediaFinal = (caixa.getMediaAtual() + notaFinal) / 2.0;
+                caixa.setMediaAtual(mediaFinal);
+
+                double notaCorteFinal = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : caixa.getMediaMin();
+
+                if (mediaFinal >= notaCorteFinal) {
+                    caixa.setSituacao("Aprovado");
+                } else {
+                    caixa.setSituacao("Reprovado");
+                }
             }
             caixa.setPontosNecessarios(0.0);
         }
@@ -90,8 +94,19 @@ public class CaixaProvasService {
 
             caixa.setSituacao("Prova Final");
 
-            double notaNecessaria = (caixa.getMediaMinFinal() != null) ? (2 * caixa.getMediaMinFinal()) - media : 0.0;
-            caixa.setPontosNecessarios(Math.max(0, notaNecessaria));
+            // Define qual é a nota de corte alvo (se não tiver a da final específica, usa a média mínima geral)
+            double corteAlvo = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : caixa.getMediaMin();
+
+            // 1. Calcula quanto ele precisa tirar pela fórmula da média final usando o corte correto
+            double notaNecessariaMedia = (2 * corteAlvo) - media;
+
+            // 2. Pega a nota mínima absoluta exigida só para fazer/passar na final (se houver)
+            double notaMinimaFinalExigida = (caixa.getMediaMinFinal() != null) ? caixa.getMediaMinFinal() : 0.0;
+
+            // 3. O aluno precisará tirar o MAIOR valor entre o que a média exige e a nota mínima obrigatória
+            double notaNecessariaFinal = Math.max(notaNecessariaMedia, notaMinimaFinalExigida);
+
+            caixa.setPontosNecessarios(Math.max(0, notaNecessariaFinal));
         }
         // 4. REPROVADO
         else {
