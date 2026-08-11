@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "https://eu-passei-react.vercel.app", allowCredentials = "true")
 @RequestMapping("/api")
 public class CaixaProvasController {
 
