@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "https://eu-passei-react.vercel.app", allowCredentials = "true")
 @RequestMapping("/api")
 public class AuthController {
 
