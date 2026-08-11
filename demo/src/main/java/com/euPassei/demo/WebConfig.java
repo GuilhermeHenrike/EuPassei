@@ -1,4 +1,4 @@
-package com.exemplo.eupassei.config; // Ajuste o pacote para o seu
+package com.euPassei.demo;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
