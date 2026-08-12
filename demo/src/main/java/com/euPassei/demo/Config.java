@@ -35,8 +35,11 @@ public class Config {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Libera o frontend da Vercel
-        configuration.setAllowedOrigins(List.of("https://eu-passei-react.vercel.app"));
+        // Libera o frontend da Vercel e do localhost
+        configuration.setAllowedOrigins(List.of(
+                "https://eu-passei-react.vercel.app",
+                "http://localhost:5173"
+        ));
         // Libera os métodos HTTP
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Libera todos os headers (necessário para o envio de credenciais e JSON)
