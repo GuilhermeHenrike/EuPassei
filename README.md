@@ -5,8 +5,21 @@ O **EuPassei** é uma aplicação web desenvolvida para auxiliar estudantes a ge
 O sistema resolve o problema do acompanhamento escolar/universitário disperso, centralizando o controle de notas parciais, recuperação e provas finais em um único ambiente seguro.
 
 ### 🛠️ Tecnologias Principais
-* **Back-end:** Java 17, Spring Boot, Spring Data JPA, Spring Security (BCrypt), Hibernate, Bean Validation, Banco de Dados Relacional (MySQL)
+* **Back-end:** Java 17, Spring Boot, Spring Data JPA, Spring Security (BCrypt), Hibernate, Bean Validation, Banco de Dados Relacional (PostgreSQL)
 * **Front-end:** React (Vite), Axios, Material UI (MUI)
+
+---
+
+🌐 Acesso
+
+A aplicação está disponível em produção:
+
+🔗 Acessar aplicação
+* [Acessar](https://eu-passei-react.vercel.app/))
+
+O projeto foi publicado utilizando:
+Frontend: Vercel
+Backend e Banco de dados: Render
 
 ---
 
