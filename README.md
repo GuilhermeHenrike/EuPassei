@@ -21,6 +21,8 @@ O projeto foi publicado utilizando:
 Frontend: Vercel
 Backend e Banco de dados: Render
 
+Nota: Como o backend está hospedado no plano gratuito do Render, o serviço pode entrar em modo de suspensão após um período de inatividade. Nesse caso, a primeira requisição pode levar alguns segundos para ser processada enquanto o servidor é reativado.
+
 ---
 
 ## 🗂️ Estrutura do Repositório
