@@ -15,7 +15,7 @@ O sistema resolve o problema do acompanhamento escolar/universitário disperso, 
 A aplicação está disponível em produção:
 
 🔗 Acessar aplicação
-* [Acessar](https://eu-passei-react.vercel.app/))
+* [Acessar](https://eu-passei-react.vercel.app/)
 
 O projeto foi publicado utilizando:
 Frontend: Vercel
